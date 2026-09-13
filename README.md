@@ -41,7 +41,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### GitHub token
 
-The dashboard works without authentication, but GitHub limits unauthenticated Search API requests to 10 requests per minute. The activity chart makes one request per month, so a token is recommended for reliable results.
+The dashboard works without authentication, but GitHub limits unauthenticated Search API requests to 10 requests per minute. The activity chart makes one request per month, so a token is recommended for reliable results. The contribution heatmap uses GitHub's GraphQL API and requires a token.
 
 Create a `.env.local` file in the project root:
 
@@ -49,7 +49,20 @@ Create a `.env.local` file in the project root:
 GITHUB_TOKEN=your_github_personal_access_token
 ```
 
+You can use `.env.example` as a template. Copy it to `.env.local`, replace the placeholder with your token, and restart the server:
+
+```bash
+cp .env.example .env.local
+npm run dev
+```
+
 The token only needs read access to public repositories. Never commit `.env.local` or expose the token in client-side code.
+
+After creating or changing `.env.local`, restart the development server:
+
+```bash
+npm run dev
+```
 
 ## Available scripts
 
