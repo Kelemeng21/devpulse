@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevPulse
 
-## Getting Started
+DevPulse is a lightweight GitHub developer analytics dashboard. Enter a GitHub username to explore repository statistics, language distribution, detailed repository languages, and commit activity across the last 12 months.
 
-First, run the development server:
+## Features
+
+- Fetches up to 100 public repositories for a GitHub username
+- Shows repository visibility, stars, forks, and descriptions
+- Visualizes the distribution of primary repository languages
+- Expands each repository to show its language breakdown by bytes
+- Displays monthly commit activity for the last 12 months
+- Responsive layout for desktop and mobile screens
+
+## Tech stack
+
+- [Next.js](https://nextjs.org/) 16 with the App Router
+- [React](https://react.dev/) 19
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/) 4
+- [Recharts](https://recharts.org/) for data visualization
+- GitHub REST API
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20 or newer
+- npm
+- A GitHub account if you want to create an API token
+
+### Installation
 
 ```bash
+git clone <repository-url>
+cd devpulse
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### GitHub token
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The dashboard works without authentication, but GitHub limits unauthenticated Search API requests to 10 requests per minute. The activity chart makes one request per month, so a token is recommended for reliable results.
 
-## Learn More
+Create a `.env.local` file in the project root:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+GITHUB_TOKEN=your_github_personal_access_token
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The token only needs read access to public repositories. Never commit `.env.local` or expose the token in client-side code.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available scripts
 
-## Deploy on Vercel
+```bash
+npm run dev      # Start the development server
+npm run lint     # Run ESLint
+npm run build    # Create a production build
+npm run start    # Start the production server
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How it works
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The client sends a username to `/api/github/repos`. The server then:
+
+1. Fetches the user's repositories from GitHub.
+2. Queries GitHub commit search for each of the last 12 calendar months.
+3. Returns repository data and monthly commit totals to the dashboard.
+
+If an individual activity request fails, the other months are still returned and the dashboard displays a warning instead of failing the entire request.
+
+## Project structure
+
+```text
+app/
+├── api/github/repos/route.ts  # GitHub repository and activity API route
+├── globals.css                # Global styles and Tailwind entry point
+├── layout.tsx                 # Root layout
+└── page.tsx                   # Dashboard UI
+public/                        # Static assets
+```
+
+## Deployment
+
+The project can be deployed to [Vercel](https://vercel.com/) or any platform that supports Next.js. Add `GITHUB_TOKEN` to the deployment environment variables before deploying.
+
+## License
+
+Belong to Kelemeng21
